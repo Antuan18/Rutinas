@@ -1,167 +1,268 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Base de Datos - Mi Sitio</title>
-    <script src="https://apis.google.com/js/api.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
-            margin: 0;
-            padding: 20px;
-        }
-        
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-        
-        #registroContainer {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            grid-gap: 20px;
-            margin-bottom: 20px;
-        }
-        
-        .registroItem {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        
-        .registroItem label {
-            display: block;
-            margin-bottom: 5px;
-            color: #333;
-        }
-        
-        .registroItem input,
-        .registroItem textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        
-        .registroItem button {
-            width: 100%;
-            padding: 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        
-        .registroItem button:hover {
-            background-color: #45a049;
-        }
-        
-        #inventarioContainer {
-            display: none; /* Ocultar el inventario por defecto */
-        }
-    </style>
-    <script>
-        // Configurar cliente de Google Drive API
-        function initClient() {
-            gapi.client.init({
-                apiKey: '', // No es necesario para esta autenticación
-                clientId: '527346036157-ab701j0da2su1c5l3u85ogkkap928i2j.apps.googleusercontent.com',
-                discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest'],
-                scope: 'https://www.googleapis.com/auth/drive.file'
-            }).then(function () {
-                console.log('Google Drive API initialized');
-            }, function(error) {
-                console.error('Error initializing Google Drive API:', error);
-            });
-        }
-
-        // Subir inventario a Google Drive
-        function subirInventario() {
-            var inventarioData = JSON.stringify(inventario); // Convertir el inventario a JSON
-            
-            var fileMetadata = {
-                'name': 'inventario.json' // Nombre del archivo en Google Drive
-            };
-            var media = {
-                mimeType: 'application/json',
-                body: inventarioData
-            };
-            
-            gapi.client.drive.files.create({
-                resource: fileMetadata,
-                media: media,
-                fields: 'id'
-            }).then(function(response) {
-                console.log('Archivo subido:', response);
-                alert('El inventario se ha guardado en Google Drive.');
-            }, function(error) {
-                console.error('Error al subir archivo:', error);
-                alert('Ha ocurrido un error al guardar el inventario.');
-            });
-        }
-
-        // Cargar cliente de Google Drive API
-        gapi.load('client', initClient);
-        
-        // Función para mostrar notificación de registro exitoso
-        function registroExitoso() {
-            alert('¡Registro exitoso! Puedes proceder al siguiente paso.');
-        }
-    </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rutina Arnold Split - Antony</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet"> <!-- Añadido -->
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif; /* Cambiado */
+      margin: 0;
+      padding: 0;
+      transition: background-color 0.3s, color 0.3s;
+      background-color: #f8f8f8;
+      color: #333;
+      position: relative;
+    }
+    /* Modo Oscuro */
+    body.dark-mode {
+      background-color: #333;
+      color: #f8f8f8;
+    }
+    h1 {
+      text-align: center;
+      margin-top: 30px;
+      color: inherit;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      transition: background-color 0.3s, box-shadow 0.3s;
+    }
+    /* Modo Oscuro */
+    .container.dark-mode {
+      background-color: #444;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+    }
+    table {
+      width: 100%;
+      color: inherit;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 8px;
+      border-bottom: 1px solid #ddd;
+    }
+    th {
+      text-align: left;
+      color: inherit;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      font-weight: bold;
+      color: inherit;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      color: inherit;
+      background-color: #fff;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      margin-top: 10px; /* Añadido */
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .rutinaBox {
+      border: 1px solid #ddd;
+      padding: 15px;
+      margin-top: 20px;
+      border-radius: 8px;
+      background-color: #f8f8f8;
+      position: relative; /* Añadido */
+    }
+    /* Modo Oscuro */
+    .rutinaBox.dark-mode {
+      background-color: #666;
+      border-color: #888;
+    }
+    .rutinaBox h2 {
+      margin-top: 0;
+      margin-bottom: 10px;
+      font-size: 20px;
+      color: inherit;
+    }
+    .rutinaEntry {
+      margin-bottom: 8px;
+      color: inherit;
+    }
+    a {
+      color: #007bff;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    .green-bg {
+      background-color: #aaffaa;
+    }
+    .red-bg {
+      background-color: #ffaaaa;
+    }
+    /* Líneas de Separación */
+    .separator {
+      border-top: 1px solid #ccc;
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+    .edit-button {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
+    /* Estilo para resaltar la palabra "rutina" */
+    .highlight {
+      font-weight: bold;
+      text-decoration: underline;
+    }
+  </style>
 </head>
-<body>
-    <h1>Mi Base de Datos</h1>
-    
-    <!-- Formulario para agregar una entrada -->
-    <div id="registroContainer">
-        <div class="registroItem">
-            <h2>Agregar Entrada</h2>
-            <label for="nombre">Nombre:</label>
-            <input type="text" id="nombre" name="nombre" required><br>
-            <label for="dni">DNI:</label>
-            <input type="text" id="dni" name="dni" required><br>
-            <label for="telefono">Teléfono:</label>
-            <input type="tel" id="telefono" name="telefono" required><br>
-            <label for="modelo">Modelo/Marca:</label>
-            <input type="text" id="modelo" name="modelo" required><br>
-            <label for="aRealizar">A Realizar:</label>
-            <input type="text" id="aRealizar" name="aRealizar" required><br>
-            <label for="observaciones">Observaciones:</label>
-            <textarea id="observaciones" name="observaciones" required></textarea><br>
-            <label for="observacionCliente">Observación del Cliente:</label>
-            <textarea id="observacionCliente" name="observacionCliente" required></textarea><br>
-            <label for="fecha">Fecha:</label>
-            <input type="date" id="fecha" name="fecha" required><br>
-            <button type="submit" onclick="registroExitoso()">Agregar Entrada</button>
-        </div>
-        
-        <!-- Búsqueda por nombre o DNI -->
-        <div class="registroItem">
-            <h2>Búsqueda por Nombre o DNI</h2>
-            <label for="busqueda">Buscar:</label>
-            <input type="text" id="busqueda">
-            <button onclick="buscar()">Buscar</button>
-        </div>
-    </div>
-    
-    <!-- Botón para descargar el inventario como Excel -->
-    <h2>Descargar Inventario</h2>
-    <button onclick="descargarInventario()">Descargar como Excel</button>
-    
-    <!-- Sección para ver el inventario (oculta por defecto) -->
-    <div id="inventarioContainer">
-        <h2>Inventario</h2>
-        <ul id="inventario">
-            <!-- Aquí se mostrará el inventario generado dinámicamente con JavaScript -->
-        </ul>
-    </div>
-    
-    <!-- Botón para guardar el inventario en Google Drive -->
-    <h2>Guardar Inventario en Google Drive</h2>
-    <button onclick="subirInventario()">Guardar en Google Drive</button>
+<body class="light-mode">
+  <h1>Rutina Arnold Split - Antony</h1>
+  <div class="container">
+    <h2 style="color: inherit;">Agrega tu rutina aquí</h2>
+    <table>
+      <tr>
+        <th style="color: inherit;">Día:</th>
+        <td><input type="text" id="dia" name="dia" required></td>
+      </tr>
+      <tr>
+        <th style="color: inherit;">Rutina:</th>
+        <td><input type="text" id="rutina" name="rutina" required></td>
+      </tr>
+      <tr>
+        <th style="color: inherit;">Ejercicio:</th>
+        <td><input type="text" id="ejercicio" name="ejercicio" required></td>
+      </tr>
+      <tr>
+        <th style="color: inherit;">Series:</th>
+        <td><input type="text" id="series" name="series" required></td>
+      </tr>
+      <tr>
+        <th style="color: inherit;">Descansos:</th>
+        <td><input type="text" id="descansos" name="descansos" required></td>
+      </tr>
+      <tr>
+        <th style="color: inherit;">Video Demostración:</th>
+        <td><input type="text" id="video" name="video" placeholder="https://www.youtube.com/watch?v=... o https://www.tiktok.com/@usuario/video/..."></td>
+      </tr>
+    </table>
+    <button onclick="agregarRutina()">Agregar Rutina</button> <!-- Modificado -->
+    <!-- Línea de Separación -->
+    <div class="separator"></div>
+    <!-- Cuadros de Rutinas -->
+    <div id="rutinasContainer"></div>
+  </div>
+  
+  <script>
+    function agregarRutina() {
+      var dia = document.getElementById("dia").value;
+      var rutina = document.getElementById("rutina").value;
+      var ejercicio = document.getElementById("ejercicio").value;
+      var series = document.getElementById("series").value;
+      var descansos = document.getElementById("descansos").value;
+      var video = document.getElementById("video").value;
+      
+      var rutinasContainer = document.getElementById("rutinasContainer");
+      var diaBox = document.getElementById(dia.toLowerCase());
+      
+      if (!diaBox) {
+        diaBox = document.createElement("div");
+        diaBox.id = dia.toLowerCase();
+        diaBox.classList.add("rutinaBox");
+        if (dia.toLowerCase() === obtenerDiaActual()) {
+          diaBox.classList.add("green-bg");
+        } else {
+          diaBox.classList.add("red-bg");
+        }
+        diaBox.innerHTML = `<h2>${dia}<button class="edit-button" onclick="editarRutina('${dia.toLowerCase()}')">Editar</button></h2>`; // Modificado
+        rutinasContainer.appendChild(diaBox);
+      }
+      
+      var rutinaEntry = document.createElement("div");
+      rutinaEntry.classList.add("rutinaEntry");
+      rutinaEntry.innerHTML = `<strong>Rutina:</strong> ${resaltarPalabra(rutina, "rutina")}<br>
+                                <strong>Ejercicio:</strong> ${ejercicio}<br>
+                                <strong>Series:</strong> ${series}<br>
+                                <strong>Descansos:</strong> ${descansos}<br>
+                                <a href="${video}" target="_blank">Ver Video</a>`;
+      diaBox.appendChild(rutinaEntry);
+      
+      document.getElementById("dia").value = "";
+      document.getElementById("rutina").value = "";
+      document.getElementById("ejercicio").value = "";
+      document.getElementById("series").value = "";
+      document.getElementById("descansos").value = "";
+      document.getElementById("video").value = "";
+    }
+
+    function resaltarPalabra(texto, palabra) {
+      var expresionRegular = new RegExp('\\b' + palabra + '\\b', 'gi');
+      return texto.replace(expresionRegular, '<span class="highlight">' + palabra + '</span>');
+    }
+
+    function obtenerDiaActual() {
+      var diasSemana = ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"];
+      var fechaActual = new Date();
+      var diaActual = diasSemana[fechaActual.getDay()];
+      var diaBox = document.getElementById(diaActual.toLowerCase());
+      if (diaBox) {
+        window.scrollTo(0, diaBox.offsetTop);
+      }
+      return diaActual;
+    }
+
+    function editarRutina(dia) { // Agregado
+      var diaBox = document.getElementById(dia);
+      var rutinaEntry = diaBox.querySelector('.rutinaEntry');
+      var textoRutina = rutinaEntry.innerHTML;
+      var partesRutina = textoRutina.split('<br>');
+      var rutina = partesRutina[0].split('</strong>')[1].trim();
+      var ejercicio = partesRutina[1].split('</strong>')[1].trim();
+      var series = partesRutina[2].split('</strong>')[1].trim();
+      var descansos = partesRutina[3].split('</strong>')[1].trim();
+      var video = partesRutina[4].split('"')[1].trim();
+      
+      document.getElementById("dia").value = dia.charAt(0).toUpperCase() + dia.slice(1);
+      document.getElementById("rutina").value = rutina;
+      document.getElementById("ejercicio").value = ejercicio;
+      document.getElementById("series").value = series;
+      document.getElementById("descansos").value = descansos;
+      document.getElementById("video").value = video;
+      
+      diaBox.removeChild(rutinaEntry);
+    }
+
+    // Función para cambiar entre modo claro y oscuro
+    function toggleDarkMode() {
+      var body = document.body;
+      body.classList.toggle("dark-mode");
+      var container = document.querySelector('.container');
+      container.classList.toggle("dark-mode");
+      var rutinaBoxes = document.querySelectorAll('.rutinaBox');
+      rutinaBoxes.forEach(function(box) {
+        box.classList.toggle("dark-mode");
+      });
+    }
+
+    obtenerDiaActual(); // Llamada a la función al cargar la página para redirigir automáticamente
+  </script>
 </body>
 </html>
